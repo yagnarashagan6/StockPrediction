@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production List</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: url("{{ url_for('static', filename='Purple-Blue Desktop gradient (1).jpg') }}") no-repeat center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+
+        .header {
+            background-color: #005AFF;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 70px;
+        }
+        
+        .logo-text {
+    font-size: 1.5rem; /* Adjust size as needed */
+    font-weight: bold;
+    color: rgb(234, 255, 1);
+    margin-right: 20px; /* Space between text and nav links */
+    text-transform: uppercase; /* Optional: Makes text uppercase */
+    letter-spacing: 1px; /* Optional: Adds spacing between letters */
+        }   
+
+
+        .header nav {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .header nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .header nav a:hover {
+            color: #d1eaff;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 80%;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 100px;
+            text-align: center;
+            border: 2px solid #000000;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #333333;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #dddddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #ff0000;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .summary {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            text-align: left;
+        }
+
+        .summary p {
+            margin: 10px 0;
+        }
+
+        #loading {
+            display: none;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #005AFF;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo-text">Production Tracker</div>
+        <nav>
+            <a href="#industries">Industries</a>
+            <a href="#network-solutions">Network Solutions</a>
+            <a href="#insights">Insights & Innovation</a>
+            <a href="#collaborate">Collaborate with Us</a>
+            <a href="#about">We Are Nokia</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <h1>Production List</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Search Product</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select id="product-search">
+                            <option value="">Select an iPhone</option>
+                        </select>
+                    </td>
+                    <td><button id="search-button">Calculate</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="summary">
+            <p><strong>Possible Production Units:</strong> <span id="possible-production-units">-</span></p>
+            <p><strong>Remaining Stock:</strong> <span id="remaining-stock">-</span></p>
+        </div>
+
+        <div id="loading">Loading...</div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const productSearch = document.getElementById('product-search');
+            const searchButton = document.getElementById('search-button');
+            const loading = document.getElementById('loading');
+
+            // Fetch iPhone models for the dropdown
+            fetch('/get-excel-data')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    data.iphone_models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model;
+                        option.textContent = model;
+                        productSearch.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching product data:', error));
+
+            // Handle Calculate button click
+            searchButton.addEventListener('click', function () {
+                const selectedProduct = productSearch.value;
+
+                if (!selectedProduct) {
+                    alert('Please select an iPhone model.');
+                    return;
+                }
+
+                // Show loading indicator
+                loading.style.display = 'block';
+
+                fetch('/calculate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ product: selectedProduct })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    return;
+                    }
+                    // Update Summary
+                    document.getElementById('possible-production-units').textContent = data.possible_production_units;
+                    document.getElementById('remaining-stock').textContent = data.remaining_stock;
+                })
+                .catch(error => console.error('Error during calculation:', error))
+                .finally(() => {
+                    // Hide loading indicator
+                    loading.style.display = 'none';
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
