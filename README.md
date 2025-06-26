@@ -58,10 +58,10 @@ This Flask-based tool streamlines production planning by calculating the maximum
 ## 📁 Project Structure
 ├── templates
 
-├── index1.html # Frontend UI
+   ├── index1.html # Frontend UI
 
-    ├── python.py # Flask backend with logic
-    ├── Book1.xlsx # Online Excel sheet (data source)
+├── python.py # Flask backend with logic
+├── Book1.xlsx # Online Excel sheet (data source)
 
 ---
 
