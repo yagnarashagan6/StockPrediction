@@ -2,9 +2,7 @@
 
 A dynamic web application built with **Flask** to optimize product manufacturing based on available stock, using real-time data from an online Excel sheet.
 
-## 🚀 Live Demo
-
-_(Optional: Add if deployed)_
+## 🚀 Live Demo - https://production-optimizer-sy4k.onrender.com/
 
 ## 👨‍💻 Developed By
 
@@ -63,8 +61,8 @@ This Flask-based tool streamlines production planning by calculating the maximum
 
 ├── index1.html # Frontend UI
 
-    ├── python.py # Flask backend with logic
-    ├── Book1.xlsx # Online Excel sheet (data source)
+├── python.py # Flask backend with logic
+├── Book1.xlsx # Online Excel sheet (data source)
 
 ---
 

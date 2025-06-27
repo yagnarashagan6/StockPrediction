@@ -1,326 +1,354 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Production Optimizer</title>
-    <link rel="icon" type="image/png" href="stock.png">
+    <link rel="icon" type="image/png" href="stock.png" />
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-            color: #333;
+      /* New CSS based on index.html design */
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+        color: #333;
+        margin: 0;
+      }
+
+      .header {
+        width: 100%;
+        background-color: #1a202c;
+        padding: 1.5rem 2.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+        flex-wrap: wrap;
+        box-sizing: border-box;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+
+      .logo-text {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #a78bfa;
+        margin-right: 20px;
+      }
+
+      .header nav {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+      }
+
+      .header nav a {
+        color: #cbd5e0;
+        margin: 0 1.5rem;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        font-size: 1rem;
+        font-weight: bold;
+      }
+
+      .header nav a:hover {
+        color: #ffffff;
+      }
+
+      .container {
+        background-color: #ffffff;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 960px;
+        margin-top: 6rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        box-sizing: border-box;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        text-align: center;
+        color: #333;
+        margin-bottom: 1.5rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #f8fafc;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      th {
+        background-color: #4a5568;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        text-align: center;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      select:focus {
+        outline: none;
+        border-color: #a78bfa;
+        box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.3);
+      }
+
+      button {
+        background-color: #7c3aed;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+      }
+
+      button:hover {
+        background-color: #6d28d9;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .summary {
+        background-color: #f5f3ff;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        margin-top: 1.5rem;
+        border: 1px solid #ddd;
+      }
+
+      .summary p {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+        color: #333;
+      }
+
+      .summary p strong {
+        color: #4a5568;
+      }
+
+      #remaining-stock-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0.5rem 0 1rem;
+      }
+
+      #remaining-stock-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      #loading {
+        display: none;
+        text-align: center;
+        padding: 1rem;
+        color: #4a5568;
+        font-weight: 600;
+      }
+
+      .error-message {
+        color: #dc2626;
+        font-weight: 600;
+        margin-top: 0.5rem;
+      }
+
+      .success-message {
+        color: #16a34a;
+        font-weight: 600;
+        margin-top: 0.5rem;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .container {
+          padding: 1.5rem;
         }
 
         .header {
-            background-color: #1a202c;
-            padding: 1.2rem 2rem;
-            color: white;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          padding: 1rem;
+          flex-direction: column;
+          text-align: center;
         }
 
         .logo-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #a78bfa;
+          margin-bottom: 1rem;
+          margin-right: 0;
         }
 
         .header nav {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
+          flex-direction: column;
+          align-items: center;
         }
 
         .header nav a {
-            color: #cbd5e0;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.95rem;
-            transition: color 0.3s ease;
+          margin: 0.5rem 0;
         }
-
-        .header nav a:hover {
-            color: #ffffff;
-        }
-
-        .container {
-            margin-top: 6.5rem;
-            background-color: #fff;
-            border-radius: 1rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            padding: 2rem;
-            max-width: 960px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 1.8rem;
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #f8fafc;
-            border-radius: 0.75rem;
-            overflow: hidden;
-            margin-top: 1rem;
-        }
-
-        th,
-        td {
-            padding: 1rem;
-            text-align: center;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        th {
-            background-color: #4a5568;
-            color: white;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-
-        select,
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            font-size: 1rem;
-            border-radius: 0.75rem;
-        }
-
-        select {
-            border: 1px solid #e2e8f0;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: #a78bfa;
-            box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.3);
-        }
-
-        button {
-            background-color: #7c3aed;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #6d28d9;
-            transform: translateY(-2px);
-        }
-
-        .summary {
-            background-color: #f5f3ff;
-            margin-top: 2rem;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            border: 1px solid #ddd;
-        }
-
-        .summary p,
-        .summary li {
-            font-size: 1rem;
-            margin: 0.5rem 0;
-            color: #333;
-        }
-
-        #remaining-stock-list {
-            padding-left: 1.2rem;
-        }
-
-        #loading {
-            display: none;
-            margin-top: 1rem;
-            text-align: center;
-            font-weight: bold;
-            color: #4a5568;
-        }
-
-        .error-message {
-            color: #dc2626;
-            font-weight: 600;
-        }
-
-        .success-message {
-            color: #16a34a;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 1rem;
-            }
-
-            .header nav {
-                flex-direction: column;
-                align-items: flex-start;
-                width: 100%;
-                margin-top: 1rem;
-            }
-
-            .header nav a {
-                margin: 0.5rem 0;
-            }
-
-            table,
-            thead,
-            tbody,
-            th,
-            td,
-            tr {
-                display: block;
-                width: 100%;
-            }
-
-            tr {
-                margin-bottom: 1rem;
-                border-bottom: 2px solid #e2e8f0;
-            }
-
-            td {
-                text-align: left;
-            }
-
-            th {
-                display: none;
-            }
-        }
+      }
     </style>
-</head>
-
-<body>
-
+  </head>
+  <body>
     <div class="header">
-        <div class="logo-text">Production Tracker</div>
-        <nav>
-            <a href="#industries">Industries</a>
-            <a href="#network-solutions">Network Solutions</a>
-            <a href="#insights">Insights & Innovation</a>
-            <a href="#collaborate">Collaborate with Us</a>
-            <a href="#about">We Are Nokia</a>
-        </nav>
+      <div class="logo-text">Production Tracker</div>
+      <nav>
+        <a href="#industries">Industries</a>
+        <a href="#network-solutions">Network Solutions</a>
+        <a href="#insights">Insights & Innovation</a>
+        <a href="#collaborate">Collaborate with Us</a>
+        <a href="#about">We Are Nokia</a>
+      </nav>
     </div>
 
     <div class="container">
-        <h1>Production List</h1>
+      <h1>Production List</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Search Product</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <select id="product-search">
+                <option value="">Select an iPhone</option>
+              </select>
+            </td>
+            <td><button id="search-button">Calculate</button></td>
+          </tr>
+        </tbody>
+      </table>
 
-        <table>
-            <tbody>
-                <tr>
-                    <td>
-                        <select id="product-search">
-                            <option value="">Select an iPhone</option>
-                        </select>
-                    </td>
-                    <td>
-                        <button id="search-button">Calculate</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+      <div class="summary">
+        <p>
+          <strong>Possible Production Units:</strong>
+          <span id="possible-production-units">-</span>
+        </p>
+        <p><strong>Remaining Stock:</strong></p>
+        <ul id="remaining-stock-list"></ul>
+        <p>
+          <strong>Total Remaining Stock:</strong>
+          <span id="total-remaining-stock">-</span>
+        </p>
+      </div>
 
-        <div class="summary">
-            <p><strong>Possible Production Units:</strong> <span id="possible-production-units">-</span></p>
-            <p><strong>Remaining Stock:</strong></p>
-            <ul id="remaining-stock-list"></ul>
-            <p><strong>Total Remaining Stock:</strong> <span id="total-remaining-stock">-</span></p>
-        </div>
-
-        <div id="loading">Loading...</div>
+      <div id="loading">Loading...</div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const productSearch = document.getElementById('product-search');
-            const searchButton = document.getElementById('search-button');
-            const loading = document.getElementById('loading');
-            const stockList = document.getElementById('remaining-stock-list');
-            const totalStockDisplay = document.getElementById('total-remaining-stock');
-            const unitsDisplay = document.getElementById('possible-production-units');
+      document.addEventListener("DOMContentLoaded", function () {
+        const productSearch = document.getElementById("product-search");
+        const searchButton = document.getElementById("search-button");
+        const loading = document.getElementById("loading");
+        const stockList = document.getElementById("remaining-stock-list");
+        const totalStockDisplay = document.getElementById(
+          "total-remaining-stock"
+        );
 
-            fetch('/get-excel-data')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error);
-                        return;
-                    }
-                    data.iphone_models.forEach(model => {
-                        const option = document.createElement('option');
-                        option.value = model;
-                        option.textContent = model;
-                        productSearch.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching product data:', error));
+        fetch("/get-excel-data")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              alert(data.error);
+              return;
+            }
+            data.iphone_models.forEach((model) => {
+              const option = document.createElement("option");
+              option.value = model;
+              option.textContent = model;
+              productSearch.appendChild(option);
+            });
+          })
+          .catch((error) =>
+            console.error("Error fetching product data:", error)
+          );
 
-            searchButton.addEventListener('click', function () {
-                const selectedProduct = productSearch.value;
+        searchButton.addEventListener("click", function () {
+          const selectedProduct = productSearch.value;
 
-                if (!selectedProduct) {
-                    alert('Please select an iPhone model.');
-                    return;
-                }
+          if (!selectedProduct) {
+            alert("Please select an iPhone model.");
+            return;
+          }
 
-                loading.style.display = 'block';
-                fetch('/calculate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ product: selectedProduct })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert(data.error);
-                            return;
-                        }
+          loading.style.display = "block";
 
-                        unitsDisplay.textContent = data.possible_production_units;
-                        stockList.innerHTML = '';
-                        let total = 0;
+          fetch("/calculate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ product: selectedProduct }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.error) {
+                alert(data.error);
+                return;
+              }
 
-                        for (const [component, qty] of Object.entries(data.remaining_stock)) {
-                            const li = document.createElement('li');
-                            li.textContent = `${component}: ${qty}`;
-                            stockList.appendChild(li);
-                            total += qty;
-                        }
+              document.getElementById("possible-production-units").textContent =
+                data.possible_production_units;
 
-                        totalStockDisplay.textContent = total;
-                    })
-                    .catch(error => console.error('Error during calculation:', error))
-                    .finally(() => {
-                        loading.style.display = 'none';
-                    });
+              stockList.innerHTML = "";
+              let total = 0;
+              for (const [component, qty] of Object.entries(
+                data.remaining_stock
+              )) {
+                const li = document.createElement("li");
+                li.textContent = `${component}: ${qty}`;
+                stockList.appendChild(li);
+                total += qty;
+              }
+
+              totalStockDisplay.textContent = total;
+            })
+            .catch((error) => console.error("Error during calculation:", error))
+            .finally(() => {
+              loading.style.display = "none";
             });
         });
+      });
     </script>
-
-</body>
-
+  </body>
 </html>
