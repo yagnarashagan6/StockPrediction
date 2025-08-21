@@ -2,7 +2,7 @@
 
 A dynamic web application built with **Flask** to optimize product manufacturing based on available stock, using real-time data from an online Excel sheet.
 
-## 🚀 Live Demo - https://production-optimizer-sy4k.onrender.com/
+## 🚀 Live Demo -(https://stockprediction-zuki.onrender.com/)
 
 ## 👨‍💻 Developed By
 
